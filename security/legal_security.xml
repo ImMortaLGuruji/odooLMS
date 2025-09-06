@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="group_legal_user" model="res.groups">
+        <field name="name">Legal User</field>
+    </record>
+
+    <record id="group_legal_manager" model="res.groups">
+        <field name="name">Legal Manager</field>
+    </record>
+</odoo>

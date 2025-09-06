@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_form_legal" model="ir.ui.view">
+        <field name="name">res.partner.form.legal</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Legal Info">
+                    <group>
+                        <field name="is_lawyer" />
+                        <field name="is_client" />
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

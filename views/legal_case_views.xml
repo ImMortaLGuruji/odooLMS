@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_legal_case_list" model="ir.ui.view">
+        <field name="name">legal.case.list</field>
+        <field name="model">legal.case</field>
+        <field name="arch" type="xml">
+            <list string="Legal Cases">
+                <field name="name" />
+                <field name="client_id" />
+                <field name="lawyer_id" />
+                <field name="responsible_lawyer_id" />
+                <field name="stage" />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_legal_case_form" model="ir.ui.view">
+        <field name="name">legal.case.form</field>
+        <field name="model">legal.case</field>
+        <field name="arch" type="xml">
+            <form string="Legal Case">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="client_id" />
+                        <field name="lawyer_id" />
+                        <field name="responsible_lawyer_id" />
+                        <field name="stage" />
+                        <field name="state" />
+                    </group>
+                    <notebook>
+                        <page string="Hearings">
+                            <field name="hearing_ids">
+                                <list editable="bottom">
+                                    <field name="name" />
+                                    <field name="date" />
+                                    <field name="description" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
