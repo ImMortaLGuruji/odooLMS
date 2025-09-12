@@ -1,17 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2025  Vaibhav K Joshi & Prithvi Hegde -->
 <odoo>
     <record id="view_legal_case_list" model="ir.ui.view">
         <field name="name">legal.case.list</field>
         <field name="model">legal.case</field>
         <field name="arch" type="xml">
-            <list string="Legal Cases">
+            <list string="Legal Cases" create="true"
+                decoration-info="stage == 'intake'"
+                decoration-warning="stage == 'active'"
+                decoration-success="stage == 'closed'">
                 <field name="name" />
                 <field name="client_id" />
-                <field name="lawyer_id" />
                 <field name="responsible_lawyer_id" />
-                <field name="stage" />
-                <field name="state" />
+                <field name="case_type" />
+                <field name="stage" widget="badge" />
+                <field name="open_date" />
+                <field name="close_date" />
+                <field name="hearing_count" widget="statinfo" string="Hearings" />
+                <field name="invoice_count" widget="statinfo" string="Invoices" />
             </list>
+        </field>
+    </record>
+
+    <!-- Kanban view with colored stage badge -->
+    <record id="view_legal_case_kanban" model="ir.ui.view">
+        <field name="name">legal.case.kanban</field>
+        <field name="model">legal.case</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage" class="o_kanban_ungrouped">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record">
+                            <div
+                                class="o_kanban_header d-flex justify-content-between align-items-center">
+                                <strong t-esc="record.name.value" />
+                                <span
+                                    t-attf-class="badge #{record.stage.raw_value == 'intake' and 'bg-info' or record.stage.raw_value == 'active' and 'bg-warning' or record.stage.raw_value == 'closed' and 'bg-success' or 'bg-secondary'}">
+                                    <t t-esc="record.stage.value" />
+                                </span>
+                            </div>
+                            <div class="o_kanban_body mt-2">
+                                <div>
+                                    <span class="text-muted">Client: </span>
+                                    <span t-esc="record.client_id.display_name" />
+                                </div>
+                                <div>
+                                    <span class="text-muted">Lawyer: </span>
+                                    <span t-esc="record.responsible_lawyer_id.display_name" />
+                                </div>
+                            </div>
+                            <div class="o_kanban_footer mt-2 d-flex gap-2">
+                                <span class="o_stat_info">
+                                    <i class="fa fa-calendar me-1" />
+                                    <t
+                                        t-esc="record.hearing_count.value" /> hearings </span>
+                                <span class="o_stat_info">
+                                    <i class="fa fa-file-text-o me-1" />
+                                    <t
+                                        t-esc="record.invoice_count.value" /> invoices </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
 
@@ -20,28 +71,95 @@
         <field name="model">legal.case</field>
         <field name="arch" type="xml">
             <form string="Legal Case">
+                <header>
+                    <button name="action_create_invoice" type="object" string="Create Invoice"
+                        class="btn-primary"
+                        modifiers="{'invisible': [['fixed_fee_amount','=',0]]}" />
+                    <button name="action_print_case_summary"
+                        string="Print Case Summary"
+                        type="object" />
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_view_hearings" type="object"
+                            icon="fa-calendar">
+                            <field name="hearing_count" widget="statinfo" string="Hearings" />
+                        </button>
+                        <button class="oe_stat_button" name="action_view_invoices" type="object"
+                            icon="fa-file-text-o">
+                            <field name="invoice_count" widget="statinfo" string="Invoices" />
+                        </button>
+                        <button class="oe_stat_button" name="action_view_attachments" type="object"
+                            icon="fa-paperclip">
+                            <span>Documents</span>
+                        </button>
+                    </div>
                     <group>
-                        <field name="name" />
-                        <field name="client_id" />
-                        <field name="lawyer_id" />
-                        <field name="responsible_lawyer_id" />
-                        <field name="stage" />
-                        <field name="state" />
+                        <group>
+                            <field name="name" readonly="1" />
+                            <field name="client_id" />
+                            <field name="responsible_lawyer_id" />
+                            <field name="member_ids" widget="many2many_tags" />
+                        </group>
+                        <group>
+                            <field name="case_type" />
+                            <field name="stage" />
+                            <field name="open_date" />
+                            <field name="close_date" />
+                            <field name="fixed_fee_amount" />
+                        </group>
                     </group>
                     <notebook>
+                        <page string="Overview">
+                            <field name="description" placeholder="Case description..." />
+                        </page>
                         <page string="Hearings">
                             <field name="hearing_ids">
                                 <list editable="bottom">
                                     <field name="name" />
-                                    <field name="date" />
-                                    <field name="description" />
+                                    <field name="date_start" />
+                                    <field name="date_end" />
+                                    <field name="location" />
+                                    <field name="status" />
+                                    <field name="notes" />
                                 </list>
                             </field>
+                        </page>
+                        <page string="Chatter">
+                            <div class="oe_chatter">
+                                <field name="message_follower_ids" />
+                                <field name="activity_ids" />
+                                <field name="message_ids" />
+                            </div>
                         </page>
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <record id="view_legal_case_search" model="ir.ui.view">
+        <field name="name">legal.case.search</field>
+        <field name="model">legal.case</field>
+        <field name="arch" type="xml">
+            <search string="Search Cases">
+                <field name="name" />
+                <field name="client_id" />
+                <field name="responsible_lawyer_id" />
+                <filter string="Stage: Intake" name="stage_intake" domain="[('stage','=','intake')]" />
+                <filter string="Stage: Active" name="stage_active" domain="[('stage','=','active')]" />
+                <filter string="Stage: Closed" name="stage_closed" domain="[('stage','=','closed')]" />
+                <filter string="Civil" name="type_civil" domain="[('case_type','=','civil')]" />
+                <filter string="Criminal" name="type_criminal"
+                    domain="[('case_type','=','criminal')]" />
+                <filter string="Corporate" name="type_corporate"
+                    domain="[('case_type','=','corporate')]" />
+                <group expand="0" string="Group By">
+                    <filter name="group_responsible" string="Responsible" context="{'group_by':'responsible_lawyer_id'}" />
+                    <filter name="group_stage" string="Stage" context="{'group_by':'stage'}" />
+                    <filter name="group_type" string="Type" context="{'group_by':'case_type'}" />
+                </group>
+            </search>
         </field>
     </record>
 </odoo>

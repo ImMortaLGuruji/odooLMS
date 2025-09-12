@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2025  Vaibhav K Joshi & Prithvi Hegde -->
 <odoo>
     <record id="view_legal_hearing_list" model="ir.ui.view">
         <field name="name">legal.hearing.list</field>
@@ -7,7 +8,9 @@
             <list string="Legal Hearings">
                 <field name="name" />
                 <field name="case_id" />
-                <field name="date" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="status" />
             </list>
         </field>
     </record>
@@ -21,11 +24,41 @@
                     <group>
                         <field name="name" />
                         <field name="case_id" />
-                        <field name="date" />
-                        <field name="description" />
+                        <field name="date_start" />
+                        <field name="date_end" />
+                        <field name="location" />
+                        <field name="status" />
+                        <field name="notes" />
                     </group>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <record id="view_legal_hearing_calendar" model="ir.ui.view">
+        <field name="name">legal.hearing.calendar</field>
+        <field name="model">legal.hearing</field>
+        <field name="arch" type="xml">
+            <calendar string="Hearings" date_start="date_start" date_stop="date_end" color="case_id">
+                <field name="name" />
+                <field name="case_id" />
+                <field name="status" />
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_legal_hearing_search" model="ir.ui.view">
+        <field name="name">legal.hearing.search</field>
+        <field name="model">legal.hearing</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="case_id" />
+                <filter name="group_by_case" string="Group by Case" context="{'group_by':'case_id'}" />
+                <filter name="today" string="Today"
+                    domain="[('date_start','&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')),
+                                 ('date_start','&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]" />
+            </search>
         </field>
     </record>
 </odoo>

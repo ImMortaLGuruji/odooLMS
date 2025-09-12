@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2025  Vaibhav K Joshi & Prithvi Hegde -->
+<odoo>
+	<template id="report_legal_case_summary_template" xml:space="preserve">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<div class="page">
+					<h2>Case Summary: <span t-esc="o.name"/></h2>
+					<p>
+						<strong>Client:</strong>
+						<span t-esc="o.client_id.name"/>
+					</p>
+					<p>
+						<strong>Responsible Lawyer:</strong>
+						<span t-esc="o.responsible_lawyer_id.name"/>
+					</p>
+					<p>
+						<strong>Stage:</strong>
+						<span t-esc="o.stage"/>
+					</p>
+					<p>
+						<strong>Open:</strong><span t-esc="o.open_date"/>
+						<strong style="margin-left: 10px;">Close:</strong><span t-esc="o.close_date"/>
+					</p>
+					<p>
+						<strong>Description</strong><br/>
+						<span t-esc="o.description"/>
+					</p>
+
+					<h3>Hearings</h3>
+					<table class="table table-sm o_main_table">
+						<thead>
+							<tr>
+								<th>Subject</th>
+								<th>Start</th>
+								<th>End</th>
+								<th>Location</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="o.hearing_ids" t-as="h">
+								<td t-esc="h.name"/>
+								<td t-esc="h.date_start"/>
+								<td t-esc="h.date_end"/>
+								<td t-esc="h.location"/>
+								<td t-esc="h.status"/>
+							</tr>
+						</tbody>
+					</table>
+
+					<h3>Attachments</h3>
+					<ul>
+						<li t-foreach="o.message_main_attachment_id and [o.message_main_attachment_id] or []" t-as="att">
+							<span t-esc="att.name"/>
+						</li>
+						<li t-foreach="o.message_attachment_count and (o.message_ids.mapped('attachment_ids')) or []" t-as="att2">
+							<span t-esc="att2.name"/>
+						</li>
+					</ul>
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>
