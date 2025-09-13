@@ -3,7 +3,7 @@
 Manage legal cases, hearings, documents, and fixed‑fee billing in Odoo. Simple, lightweight, and ready to use.
 
 ## Highlights
-- Cases with stages (Intake, Active, Closed) and automatic sequence (CASE/<year>/<seq>)
+- Cases with stages (Intake, Active, Closed) and automatic sequence (CASE/{year}/{seq})
 - Hearings in Calendar and List views (start required, end optional)
 - Smart buttons for Hearings, Invoices, and Documents
 - One-click fixed-fee customer invoice per case
@@ -49,7 +49,7 @@ Option 2 — From command line (Windows PowerShell)
 
 ## Configuration
 - Contacts: mark partners as Lawyer and/or Client (Legal Info tab). Optionally set Bar Number.
-- Sequence is created automatically (code: `legal.case`, prefix: `CASE/%(year)s/`).
+- Sequence is created automatically (code: `legal.case`, prefix: `CASE/{year}/{seq}`).
 
 ## Usage
 1) Create a Case: Legal → Cases → New. Choose Client and Responsible Lawyer; set Type and Description.
